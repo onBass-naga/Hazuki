@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.Controller">
+<children><VBox layoutY="4.0" prefHeight="400.0" prefWidth="375.0">
+<children><Label text="URL" /><TextField fx:id="urlField" text="jdbc:postgresql://192.168.33.10:5432/dev_dictarea" /><Label text="USER" /><TextField fx:id="userField" text="postgres" /><Label text="PASSWORD" /><PasswordField fx:id="passwordField" /><Label text="Driver" /><HBox prefHeight="33.0" prefWidth="312.0">
+<children><TextField fx:id="driverField" prefHeight="26.0" prefWidth="264.0" text="org.postgresql.Driver" /><Button mnemonicParsing="false" prefHeight="26.0" prefWidth="79.0" text="Button" />
+</children></HBox><HBox prefHeight="27.0" prefWidth="375.0">
+<children><Button fx:id="testing" layoutX="477.0" layoutY="138.0" mnemonicParsing="false" onAction="#testConnection" prefHeight="26.0" prefWidth="94.0" text="TEST接続" /><ProgressIndicator fx:id="progressIndicator" prefHeight="27.0" prefWidth="52.0" progress="0.0" visible="false" />
+</children></HBox><Label fx:id="messageLabel" alignment="TOP_LEFT" prefHeight="195.0" prefWidth="375.0" text="message" visible="false" wrapText="true" />
+</children></VBox>
+</children></AnchorPane>
