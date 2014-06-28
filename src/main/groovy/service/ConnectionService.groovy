@@ -9,17 +9,7 @@ class ConnectionService {
 
     def testConnection(ConnectCondition condition) {
 
-        System.out.println("#testConnection was called")
         try {
-//            def sql = Sql.newInstance(
-//                    url,
-//                    user,
-//                    password,
-//                    driver)
-//
-//            def results = sql.rows('select * from person;')
-//            results.each { System.out.println(it.toString()) }
-
             Class.forName(condition.driver)
             DriverManager.getConnection(
                     condition.url,
