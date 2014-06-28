@@ -20,11 +20,12 @@ class ConnectionService {
 
             new Result(canConnect: true, message: '接続成功')
 
-        } catch (e) {
-            new Result(canConnect: false, message: "${e.class.name}:${e.message}" )
-        } finally {
-            if (conn) { conn.close() }
+        } catch (Exception e) {
+            new Result(canConnect: false, message: "${e.class.name}:${e.message}")
         }
+//        } finally {
+//            if (conn) { conn.close() }
+//        }
     }
 }
 

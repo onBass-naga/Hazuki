@@ -32,48 +32,48 @@ public class Controller implements Initializable {
         progressIndicator.visible = true
         progressIndicator.indeterminate = true
 
-//        Result result
-//        def task = [
-//            call: { ->
-//                def condition = new ConnectCondition(
-//                        url: urlField.text,
-//                        user: userField.text,
-//                        password: passwordField.text,
-//                        driver: driverField.text)
-//                result = connectionService.testConnection(condition)
-//                return null
-//            },
-//            succeeded: { ->
-//                progressIndicator.setVisible(false)
-//                messageLabel.text = result.message
-//                messageLabel.visible = true
-//                service.shutdown()
-//            }
-//        ] as Task
-
-        Task<Void> task = new Task<Void>() {
-
-            Result result
-
-            @Override
-            public Void call() {
+        Result result
+        def task = [
+            myCall: { ->
                 def condition = new ConnectCondition(
                         url: urlField.text,
                         user: userField.text,
                         password: passwordField.text,
                         driver: driverField.text)
-
                 result = connectionService.testConnection(condition)
                 return null
-            }
-
-            void succeeded() {
+            },
+            succeeded: { ->
                 progressIndicator.setVisible(false)
                 messageLabel.text = result.message
                 messageLabel.visible = true
                 service.shutdown()
             }
-        };
+        ] as MyTask
+
+
+//        Task<Void> task = new Task<Void>() {
+//
+//            Result result
+//
+//            Void call() {
+//                def condition = new ConnectCondition(
+//                        url: urlField.text,
+//                        user: userField.text,
+//                        password: passwordField.text,
+//                        driver: driverField.text)
+//
+//                result = connectionService.testConnection(condition)
+//                return null
+//            }
+//
+//            void succeeded() {
+//                progressIndicator.setVisible(false)
+//                messageLabel.text = result.message
+//                messageLabel.visible = true
+//                service.shutdown()
+//            }
+//        };
         service.submit(task);
     }
 
@@ -81,4 +81,10 @@ public class Controller implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }
+}
+
+abstract class MyTask <V> extends Task<V> {
+
+    protected V call() { myCall() }
+    abstract V myCall()
 }
