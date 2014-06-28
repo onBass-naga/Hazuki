@@ -9,9 +9,10 @@ class ConnectionService {
 
     def testConnection(ConnectCondition condition) {
 
+        def conn
         try {
             Class.forName(condition.driver)
-            DriverManager.getConnection(
+            conn = DriverManager.getConnection(
                     condition.url,
                     condition.user,
                     condition.password
@@ -21,6 +22,8 @@ class ConnectionService {
 
         } catch (e) {
             new Result(canConnect: false, message: "${e.class.name}:${e.message}" )
+        } finally {
+            if (conn) { conn.close() }
         }
     }
 }
