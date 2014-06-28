@@ -1,7 +1,9 @@
 package ui
 
+import javafx.concurrent.Service
 import javafx.concurrent.Task
 import javafx.event.ActionEvent
+import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.Label
@@ -23,7 +25,6 @@ public class Controller implements Initializable {
     @FXML TextField driverField
     @FXML ProgressIndicator progressIndicator
 
-    ExecutorService service = Executors.newSingleThreadExecutor();
     ConnectionService connectionService = new ConnectionService()
 
     @FXML
@@ -32,49 +33,33 @@ public class Controller implements Initializable {
         progressIndicator.visible = true
         progressIndicator.indeterminate = true
 
-        Result result
-        def task = [
-            myCall: { ->
-                def condition = new ConnectCondition(
-                        url: urlField.text,
-                        user: userField.text,
-                        password: passwordField.text,
-                        driver: driverField.text)
-                result = connectionService.testConnection(condition)
-                return null
-            },
-            succeeded: { ->
-                progressIndicator.setVisible(false)
-                messageLabel.text = result.message
-                messageLabel.visible = true
-                service.shutdown()
+        Service<Result> service = new Service<Result>() {
+
+            Result result
+
+            @Override
+            protected Task<Result> createTask() {
+
+                Result result
+                def task = [
+                    myCall: {
+                        def condition = new ConnectCondition(
+                                url: urlField.text,
+                                user: userField.text,
+                                password: passwordField.text,
+                                driver: driverField.text)
+                        result = connectionService.testConnection(condition)
+                        return null
+                    },
+                    succeeded: {
+                        progressIndicator.setVisible(false)
+                        messageLabel.text = result.message
+                        messageLabel.visible = true
+                    }
+                ] as MyTask
             }
-        ] as MyTask
-
-
-//        Task<Void> task = new Task<Void>() {
-//
-//            Result result
-//
-//            Void call() {
-//                def condition = new ConnectCondition(
-//                        url: urlField.text,
-//                        user: userField.text,
-//                        password: passwordField.text,
-//                        driver: driverField.text)
-//
-//                result = connectionService.testConnection(condition)
-//                return null
-//            }
-//
-//            void succeeded() {
-//                progressIndicator.setVisible(false)
-//                messageLabel.text = result.message
-//                messageLabel.visible = true
-//                service.shutdown()
-//            }
-//        };
-        service.submit(task);
+        };
+        service.start();
     }
 
     @Override

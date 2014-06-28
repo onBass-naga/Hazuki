@@ -22,10 +22,9 @@ class ConnectionService {
 
         } catch (Exception e) {
             new Result(canConnect: false, message: "${e.class.name}:${e.message}")
+        } finally {
+            if (conn) { conn.close() }
         }
-//        } finally {
-//            if (conn) { conn.close() }
-//        }
     }
 }
 
