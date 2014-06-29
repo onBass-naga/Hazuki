@@ -1,5 +1,7 @@
 package service
 
+import groovy.transform.Canonical
+
 import java.sql.DriverManager
 
 /**
@@ -18,6 +20,8 @@ class ConnectionService {
                     condition.password
             )
 
+            saveCondition(condition)
+
             new Result(canConnect: true, message: '接続成功')
 
         } catch (Exception e) {
@@ -26,8 +30,24 @@ class ConnectionService {
             if (conn) { conn.close() }
         }
     }
+
+    def saveCondition(ConnectCondition condition) {
+
+        def config = new ConfigSlurper().parse('config.groovy')
+//        config.with {
+            config.db.url = condition.url
+            config.db.user = condition.user
+            config.db.password = condition.password
+            config.db.driver = condition.driver
+//        }
+
+        new File('config.groovy').withWriter { writer ->
+            config.writeTo(writer)
+        }
+    }
 }
 
+@Canonical
 class ConnectCondition {
     def url
     def user
