@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.ParserController">
+<children><TextArea fx:id="textArea" layoutY="7.0" prefHeight="529.0" prefWidth="608.0" /><Button layoutX="14.33837890625" layoutY="536.0" mnemonicParsing="false" onAction="#parse" text="Button" />
+</children></AnchorPane>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.RegisterController">
+<children><VBox layoutX="7.0" layoutY="6.0" prefHeight="592.0" prefWidth="637.0">
+<children><Label text="接続先" /><ChoiceBox fx:id="connectionChoiceBox" prefWidth="150.0" xmlns:fx="http://javafx.com/fxml" /><Label text="登録方法" /><ComboBox fx:id="registerTypeComboBox" prefWidth="150.0" xmlns:fx="http://javafx.com/fxml" /><Button fx:id="fileChooserBtn" mnemonicParsing="false" onAction="#addToTableView" text="データ選択" /><TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" xmlns:fx="http://javafx.com/fxml">
+  <columns>
+    <TableColumn fx:id="checkedColumn" prefWidth="75.0" text="C1" />
+    <TableColumn fx:id="fileNameColumn" prefWidth="508.0" text="ファイル名" />
+  </columns>
+</TableView><Button mnemonicParsing="false" onAction="#importToDB" text="データ投入" /><ProgressIndicator fx:id="progressIndicator" progress="0.0" /><Label fx:id="messageLabel" prefHeight="159.0" prefWidth="638.0" />
+</children></VBox>
+</children></AnchorPane>

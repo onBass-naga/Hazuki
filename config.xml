@@ -1,0 +1,4 @@
+<database>
+  <connection name='test' url='jdbc:postgresql://192.168.33.10:5432/dev_dictarea' user='postgres' password='value' driver='org.postgresql.Driver' />
+  <connection name='pro' url='jdbc:postgresql://192.168.33.10:5432/prodictarea' user='postgres' password='postgres' driver='org.postgresql.Driver' />
+</database>

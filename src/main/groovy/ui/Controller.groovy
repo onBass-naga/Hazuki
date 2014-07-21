@@ -21,14 +21,22 @@ public class Controller implements Initializable {
 
     @FXML
     def void showMasterPage(ActionEvent event) {
-//        System.out.println("接続設定画面を表示")
         replaceSceneContent(new MasterPage())
     }
 
     @FXML
     def void showTransactionPage(ActionEvent event) {
-//        System.out.println("接続設定画面を表示")
         replaceSceneContent(new TransactionPage())
+    }
+
+    @FXML
+    def void showRegisterPage(ActionEvent event) {
+        replaceSceneContent(new RegisterPage())
+    }
+
+    @FXML
+    def void showParserPage(ActionEvent event) {
+        replaceSceneContent(new ParserPage())
     }
 
     @Override

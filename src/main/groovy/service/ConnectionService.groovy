@@ -1,6 +1,7 @@
 package service
 
 import groovy.transform.Canonical
+import groovy.xml.MarkupBuilder
 
 import java.sql.DriverManager
 
@@ -20,8 +21,6 @@ class ConnectionService {
                     condition.password
             )
 
-            saveCondition(condition)
-
             new Result(canConnect: true, message: '接続成功')
 
         } catch (Exception e) {
@@ -31,24 +30,34 @@ class ConnectionService {
         }
     }
 
-    def saveCondition(ConnectCondition condition) {
+    def saveCondition(List connections) {
 
-        def config = new ConfigSlurper().parse('config.groovy')
-//        config.with {
-            config.db.url = condition.url
-            config.db.user = condition.user
-            config.db.password = condition.password
-            config.db.driver = condition.driver
-//        }
+        def writer = new StringWriter()
+        def xml = new MarkupBuilder(writer)
+        xml.database(){
+            connections.each {
+                connection(name: it.name, url: it.url, user: it.user,
+                        password: it.password, driver: it.driver)
+            }
+        }
+        new File('config.xml').write(writer.toString(), 'utf-8')
+    }
 
-        new File('config.groovy').withWriter { writer ->
-            config.writeTo(writer)
+    def load() {
+
+        def xml = new File('config.xml').getText('utf-8')
+        def database = new XmlSlurper().parseText(xml)
+
+        return database.connection.collect {
+            return new ConnectCondition(name: it.@name, url: it.@url, user: it.@user,
+                    password: it.@password, driver: it.@driver)
         }
     }
 }
 
 @Canonical
 class ConnectCondition {
+    def name
     def url
     def user
     def password

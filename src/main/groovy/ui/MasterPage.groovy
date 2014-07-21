@@ -1,29 +1,30 @@
 package ui
 
-import com.sun.javafx.css.converters.BooleanConverter
-import com.sun.org.apache.xpath.internal.operations.Bool
 import groovy.transform.Canonical
+import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
-import javafx.beans.value.ChangeListener
-import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
-import javafx.scene.control.CheckBox
+import javafx.scene.control.Button
+import javafx.scene.control.ChoiceBox
 import javafx.scene.control.Label
+import javafx.scene.control.ListCell
+import javafx.scene.control.ListView
 import javafx.scene.control.ProgressIndicator
-import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
+import javafx.scene.control.TextField
 import javafx.scene.control.cell.CheckBoxTableCell
 import javafx.scene.control.cell.PropertyValueFactory
+import javafx.stage.DirectoryChooser
+import javafx.stage.Window
 import javafx.util.Callback
-import javafx.util.converter.BooleanStringConverter
-import javafx.util.converter.IntegerStringConverter
+import service.ConnectionService
 import service.MasterService
 
 /**
@@ -41,23 +42,29 @@ public class MasterController extends Controller implements Initializable {
     @FXML TableView<Table> tableView;
     @FXML TableColumn<Table, String> tableNameColumn;
     @FXML TableColumn<Table, Boolean> checkedColumn;
+    @FXML Button directoryChooserBtn;
+    @FXML TextField writeFilePath
+    @FXML ChoiceBox<ConnectionModel> connectionChoiceBox;
 
     ObservableList<Table> tables = FXCollections.observableArrayList();
 
     MasterService masterService = new MasterService()
+    ConnectionService connectionService = new ConnectionService()
 
     @FXML
     def void showTableNames(ActionEvent event) {
 
         progressIndicator.visible = true
         progressIndicator.indeterminate = true
+        tables.clear()
 
         def service = [
                 createMyTask: {
                     def names
                     def task = [
                             myCall: {
-                                names = masterService.findTableNames()
+                                def connection = connectionChoiceBox.selectionModel.selectedItem
+                                names = masterService.findTableNames(connection)
                                 return null
                             },
                             succeeded: {
@@ -72,12 +79,22 @@ public class MasterController extends Controller implements Initializable {
     }
 
     @FXML
-    def void createSql() {
-        tables.each { System.out.println(it.toString()) }
+    def void export() {
+        def selected = tables.findAll { it.isChecked() }
+        def tableNames = selected.collect { it.tableName }
+        def directory = writeFilePath.text
+        def connection = connectionChoiceBox.selectionModel.selectedItem
+        masterService.export(tableNames, directory, connection)
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        connectionChoiceBox.setItems(FXCollections.observableArrayList(
+                connectionService.load()?.collect {
+                    new ConnectionModel(it)
+                }))
+
         tableView.setItems(tables);
         tableView.setEditable(true);
         tableNameColumn.setCellValueFactory(
@@ -85,17 +102,22 @@ public class MasterController extends Controller implements Initializable {
 
         checkedColumn.setCellValueFactory(
                 new PropertyValueFactory<Table, Boolean>("checked"));
-        checkedColumn.setCellFactory(
-                new CheckBoxCellFactory());
-        checkedColumn.setOnEditStart(new EventHandler<TableColumn.CellEditEvent<Table, Boolean>>() {
-            @Override
-            public void handle(TableColumn.CellEditEvent<Table, Boolean> event) {
-                System.out.println("checked")
-                Table table = (Table)event.getTableView().getItems().get(event.getTablePosition().getRow());
-                System.out.println(event.getNewValue())
-                table.setChecked(event.getNewValue());
-            }
-        });
+        checkedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(checkedColumn));
+
+        directoryChooserBtn.setOnAction(
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(final ActionEvent e) {
+                        final DirectoryChooser directoryChooser =
+                                new DirectoryChooser();
+                        final File selectedDirectory =
+                                directoryChooser.showDialog(new Window());
+                        if (selectedDirectory != null) {
+                            writeFilePath.text = selectedDirectory.getAbsolutePath();
+                        }
+                    }
+                }
+        );
     }
 }
 
@@ -123,18 +145,16 @@ def class Table {
         this.tableName.set(tableName as String);
     }
 
-    public String isChecked() {
-        return tableName.get();
+    public Boolean isChecked() {
+        return checked.get();
     }
 
     public void setChecked(checked) {
         this.checked.set(checked as Boolean);
     }
-}
 
-class CheckBoxCellFactory implements Callback<TableColumn, TableCell> {
-    @Override
-    public TableCell call(TableColumn tableColumn) {
-        return new CheckBoxTableCell()
+    public BooleanProperty checkedProperty() {
+        return checked;
     }
 }
+

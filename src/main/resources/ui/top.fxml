@@ -11,15 +11,22 @@
 <items>
         <MenuItem fx:id="del" mnemonicParsing="false" onAction="#showConnectionPage" text="show" />
 </items></Menu>
-    <Menu mnemonicParsing="false" text="全件取得">
+    <Menu mnemonicParsing="false" onAction="#showMasterPage" text="全件取得">
 <items><MenuItem fx:id="" mnemonicParsing="false" onAction="#showMasterPage" text="Unspecified Action" />
 </items>
     </Menu>
-    <Menu mnemonicParsing="false" text="トランデータ取得">
+    <Menu mnemonicParsing="false" onAction="#showTransactionPage" text="トランデータ取得">
       <items>
         <MenuItem fx:id="" mnemonicParsing="false" onAction="#showTransactionPage" text="About" />
       </items>
-    </Menu>
+    </Menu><Menu mnemonicParsing="false" text="データ投入">
+  <items>
+    <MenuItem mnemonicParsing="false" onAction="#showRegisterPage" text="Action 1" />
+  </items>
+</Menu><Menu mnemonicParsing="false" text="SQL分解">
+<items><MenuItem mnemonicParsing="false" onAction="#showParserPage" text="Unspecified Action" />
+</items>
+</Menu>
   </menus>
 </MenuBar><AnchorPane fx:id="main" layoutY="32.0" prefHeight="719.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="32.0" />
 </children></AnchorPane>
